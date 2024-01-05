@@ -1,15 +1,15 @@
 # How to join Bluzelle Mainnet
 
-# Inatall the Curiumd binary.
-## Build from the source code.
-### Build Tools
+## Inatall the Curiumd binary.
+### Build from the source code.
+#### Build Tools
 Install make and gcc
 ```
 sudo apt-get update
 
-sudo apt-get install -y make gcc
+sudo apt-get install -y make gcc lz4
 ```
-### Install Go
+#### Install Go
 Our current binary is built by Go `1.18.10`. We're going to download the tarball, extract it to `/usr/local`, and export `GOROOT` to our `$PATH`
 ```
 wget https://go.dev/dl/go1.18.10.linux-amd64.tar.gz
@@ -17,7 +17,7 @@ sudo tar -C /usr/local -xvf go1.18.10.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 ```
 
-### Install the binaries
+#### Install the binaries
 Next, let's install the latest version of Bluzelle. Make sure you `git checkout` the correct released version.
 
 ```
@@ -31,15 +31,15 @@ Verify that everything installed successfully by running:
 curiumd version --long
 ```
 
-## Download binary from github releases.
+### Download binary from github releases.
 
 ```
 wget <binary_url>
 ```
 
-# General Configuration
+## General Configuration
 Make sure to walk through the basic setup and configuration. Operators will need to initialize `curiumd`, download the genesis file for `bluzelle-9`.
-## initialize chain
+### initialize chain
 Choose a custom moniker for the node and initialize. By default, the `init` command creates the ~/.curium directory with subfolders `config` and `data`. In the `/config` directory, the most important files for configuration are `app.toml` and `config.toml`.
 
 ```
@@ -53,14 +53,14 @@ The `moniker` can be edited in the `~/.curium/config/config.toml` file:
 moniker = "<custom_moniker>"
 ```
 
-## Genesis File
+### Genesis File
 Once the node is initialized, download the genesis file and move to the `/config` directory of the Curium home directory.
 ```
 wget https://raw.githubusercontent.com/bluzelle/mainnet/main/genesis.json
 mv genesis.json ~/.curium/config/genesis.json
 ```
 
-## Seeds & Peers
+### Seeds & Peers
 Upon startup the node will need to connect to peers. If there are specific nodes a node operator is interested in setting as seeds or as persistent peers, this can be configured in `~/.ccurium/config/config.toml`
 
 ```
@@ -71,7 +71,7 @@ seeds = "<seed node id 1>@<seed node address 1>:26656,<seed node id 2>@<seed nod
 persistent_peers = "<node id 1>@<node address 1>:26656,<node id 2>@<node address 2>:26656"
 ```
 
-## Address Book
+### Address Book
 Node operators can optionally download the addressbook from [addrbook.json](https://temp)
 
 ```
@@ -79,7 +79,7 @@ wget https://raw.githubusercontent.com/bluzelle/mainnet/main/addrbook.json
 mv addrbook.json ~/curium/config
 ```
 
-## Pruning of State
+### Pruning of State
 > Note: This is an optional configuration.
 
 There are four strategies for pruning state. These strategies apply only to state and do not apply to block storage. A node operator may want to consider custom pruning if node storage is a concern or there is an interest in running an archive node.
@@ -107,25 +107,26 @@ pruning-keep-every = "1000"
 pruning-interval = "10"
  ```
 
- # Sync Options
+ ## Sync Options
  There are three main ways to sync a node on the Bluzelle; Blocksync, StateSync and QuickSync.
+ Among these three ways, the fastest one is QuickSync. QuickSync uses the compressed data snapshot and you can simply download that file and extract into the data folder. The next one is StateSync. The default one is BlockSync and it started from the Genesis file. This BlockSync could be used for setting up a archival node. 
 
- ## Blocksync
+ ### Blocksync
  Blocksync is faster than traditional consensus and syncs the chain from genesis by downloading blocks and verifying against the merkle tree of validators. For more information see [CometBFT's Fastsync Docs](https://docs.cometbft.com/v0.34/core/fast-sync)
 
  When syncing via Blocksync, node operators will either need to manually upgrade the chain or set up [Cosmovisor](https://hub.cosmos.network/main/hub-tutorials/join-mainnet.html#cosmovisor) to upgrade automatically.
 
- ### Getting Started Blocksync.
+ #### Getting Started Blocksync.
  This sync should start from the genesis file. So plz install corresponding binary version and start the node. Current corresponding version tag is `v9.0`.
  ```
  curiumd start
  ```
  The node will begin rebuilding state until it hits the first upgrade height at block 3,333,333. If Cosmovisor is set up then there's nothing else to do besides wait, otherwise the node operator will need to perform the manual upgrade.
 
- ## StateSync
+ ### StateSync
  State Sync is an efficient and fast way to bootstrap a new node, and it works by replaying larger chunks of application state directly rather than replaying individual blocks or consensus rounds. For more information, see [CometBFT's State Sync Docs](https://docs.cometbft.com/v0.34/core/state-sync)
 
- To enable state sync, visit an explorer to get a recent block height and corresponding hash. A node operator can choose any height/hash in the current bonding period, but as the recommended snapshot period is `1000` blocks, it is advised to choose something close to `current height - 1000`.
+ To enable state sync, visit an explorer to get a recent block height and corresponding hash. A node operator can choose any height/hash in the current bonding period, but as the recommended snapshot period is `1000` blocks, it is advised to choose something close to `current height - 1000`. Current height can be get on the [Bluzelle Ping.pub Explorer](https://ping.explorer.net.bluzelle.com/Bluzelle/block)
 
  With the block height and hash selected, update the configuration in `~/.curium/config/config.toml` to set `enable = true`, and populate the `trust_height` and `trust_hash`. Node operators can configure the rpc servers to a preferred provider, but there must be at least two entries. It is important that these are two rpc servers the node operator trusts to verify component parts of the chain state. While not recommended, uniqueness is not currently enforced, so it is possible to duplicate the same server in the list and still sync successfully.
 
@@ -170,7 +171,7 @@ trust_period = "168h0m0s"
 
  Once state sync successfully completes, the node will begin to process blocks normally. If state sync fails and the node operator encounters the following error: `State sync failed err="state sync aborted"`, either try restarting `curiumd` or running `curiumd tendermint unsafe-reset-all` (make sure to backup any configuration and history before doing this).
 
- ## Quick Sync
+ ### Quick Sync
  You can get snapshot from [snapshot](https://genznodes.dev/resources/snapshot/bluzelle)
 
  You can replace the data folder into the node home directory.
