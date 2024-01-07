@@ -1,6 +1,6 @@
 # How to join Bluzelle Mainnet
 
-## Inatall the Curiumd binary.
+## Install the Curiumd binary.
 ### Build from the source code.
 #### Build Tools
 Install make and gcc
