@@ -34,16 +34,16 @@ curiumd version --long
 ### Download binary from github releases.
 
 ```
-wget <binary_url>
+wget https://github.com/bluzelle/bluzelle-public/releases/download/v10.2/curiumd
 ```
 
 ## General Configuration
 Make sure to walk through the basic setup and configuration. Operators will need to initialize `curiumd`, download the genesis file for `bluzelle-9`.
 ### initialize chain
-Choose a custom moniker for the node and initialize. By default, the `init` command creates the ~/.curium directory with subfolders `config` and `data`. In the `/config` directory, the most important files for configuration are `app.toml` and `config.toml`.
+Choose a custom moniker for the node and initialize. By default, the `init` command creates the ~/.curium directory with subfolders `config` and `data`. In the `/config` directory, the most important files for configuration are `app.toml` and `config.toml`. 
 
 ```
-curiumd init <custom-moniker>
+curiumd init <custom-moniker> --chain-id <chain-id>
 ```
 > Note: Monikers can contain only ASCII characters. Using Unicode characters is not supported and renders the node unreachable.
 
@@ -61,7 +61,7 @@ mv genesis.json ~/.curium/config/genesis.json
 ```
 
 ### Seeds & Peers
-Upon startup the node will need to connect to peers. If there are specific nodes a node operator is interested in setting as seeds or as persistent peers, this can be configured in `~/.ccurium/config/config.toml`
+Upon startup the node will need to connect to peers. If there are specific nodes a node operator is interested in setting as seeds or as persistent peers, this can be configured in `~/.curium/config/config.toml`
 
 ```
 # Comma separated list of seed nodes to connect to
@@ -72,7 +72,7 @@ persistent_peers = "<node id 1>@<node address 1>:26656,<node id 2>@<node address
 ```
 
 ### Address Book
-Node operators can optionally download the addressbook from [addrbook.json](https://temp)
+Node operators can optionally download the addressbook from [addrbook.json](https://github.com/bluzelle/mainnet/blob/main/addrbook.json)
 
 ```
 wget https://raw.githubusercontent.com/bluzelle/mainnet/main/addrbook.json
@@ -108,7 +108,7 @@ pruning-interval = "10"
  ```
 
  ## Sync Options
- There are three main ways to sync a node on the Bluzelle; Blocksync, StateSync and QuickSync.
+ There are three main ways to sync a node on Bluzelle; Blocksync, StateSync and QuickSync.
  Among these three ways, the fastest one is QuickSync. QuickSync uses the compressed data snapshot and you can simply download that file and extract into the data folder. The next one is StateSync. The default one is BlockSync and it started from the Genesis file. This BlockSync could be used for setting up a archival node. 
 
  ### Blocksync
@@ -117,16 +117,16 @@ pruning-interval = "10"
  When syncing via Blocksync, node operators will either need to manually upgrade the chain or set up [Cosmovisor](https://hub.cosmos.network/main/hub-tutorials/join-mainnet.html#cosmovisor) to upgrade automatically.
 
  #### Getting Started Blocksync.
- This sync should start from the genesis file. So plz install corresponding binary version and start the node. Current corresponding version tag is `v9.0`.
+ This sync should start from the genesis file. So please install the corresponding binary version and start the node. Current corresponding version tag is `v9.0`.
  ```
  curiumd start
  ```
  The node will begin rebuilding state until it hits the first upgrade height at block 3,333,333. If Cosmovisor is set up then there's nothing else to do besides wait, otherwise the node operator will need to perform the manual upgrade.
 
  ### StateSync
- State Sync is an efficient and fast way to bootstrap a new node, and it works by replaying larger chunks of application state directly rather than replaying individual blocks or consensus rounds. For more information, see [CometBFT's State Sync Docs](https://docs.cometbft.com/v0.34/core/state-sync)
+ State Sync is an efficient and fast way to bootstrap a new node. It replays larger chunks of application state directly rather than replaying individual blocks or consensus rounds. For more information, see [CometBFT's State Sync Docs](https://docs.cometbft.com/v0.34/core/state-sync)
 
- To enable state sync, visit an explorer to get a recent block height and corresponding hash. A node operator can choose any height/hash in the current bonding period, but as the recommended snapshot period is `1000` blocks, it is advised to choose something close to `current height - 1000`. Current height can be get on the [Bluzelle Ping.pub Explorer](https://ping.explorer.net.bluzelle.com/Bluzelle/block)
+ To enable state sync, visit an explorer to get a recent block height and corresponding hash. A node operator can choose any height/hash in the current bonding period, but as the recommended snapshot period is `1000` blocks, it is advised to choose something close to `current height - 1000`. Current height can be found on the [Bluzelle Ping.pub Explorer](https://ping.explorer.net.bluzelle.com/Bluzelle/block)
 
  With the block height and hash selected, update the configuration in `~/.curium/config/config.toml` to set `enable = true`, and populate the `trust_height` and `trust_hash`. Node operators can configure the rpc servers to a preferred provider, but there must be at least two entries. It is important that these are two rpc servers the node operator trusts to verify component parts of the chain state. While not recommended, uniqueness is not currently enforced, so it is possible to duplicate the same server in the list and still sync successfully.
 
@@ -154,7 +154,7 @@ trust_hash = "trust_hash"
 trust_period = "168h0m0s"
  ```
 
- Start Cuium to begin state sync.  It may take take some time for the node to acquire a snapshot, but the command and output should look similar to the following:
+ Start Curium to begin state sync.  It may take take some time for the node to acquire a snapshot, but the command and output should look similar to the following:
 
  ```
  $ curiumd start --x-crisis-skip-assert-invariants
