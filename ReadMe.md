@@ -172,11 +172,11 @@ trust_period = "168h0m0s"
  Once state sync successfully completes, the node will begin to process blocks normally. If state sync fails and the node operator encounters the following error: `State sync failed err="state sync aborted"`, either try restarting `curiumd` or running `curiumd tendermint unsafe-reset-all` (make sure to backup any configuration and history before doing this).
 
  ### Quick Sync
- You can get snapshot from [snapshot](https://genznodes.dev/resources/snapshot/bluzelle)
+ You can get snapshot from [snapshot](http://snapshots.net.bluzelle.com:8000/)
 
  You can replace the data folder into the node home directory.
  ```
- curl -o - -L https://snapshot.genznodes.dev/bluzelle/bluzelle-3693443.tar.lz4 | lz4 -c -d - | tar -x -C $HOME/.curium
+ curl -o - -L http://snapshots.net.bluzelle.com:8000/2024-04-29_09%3A00_77695341bytes.tar.lz4 | lz4 -c -d - | tar -x -C $HOME/.curium
  ```
 Run your node again.
 ```
