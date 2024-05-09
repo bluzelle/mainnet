@@ -1,20 +1,36 @@
 # How to join Bluzelle Mainnet
 
-## Install the Curiumd binary.
-### Build from the source code.
+## 1. Install the Curiumd binary.
+### 1) Build from the source code.
 #### Build Tools
 Install make and gcc
 ```
 sudo apt-get update
 
-sudo apt-get install -y make gcc lz4
+sudo apt-get install -y make gcc lz4 git
 ```
 #### Install Go
 Our current binary is built by Go `1.18.10`. We're going to download the tarball, extract it to `/usr/local`, and export `GOROOT` to our `$PATH`
 ```
 wget https://go.dev/dl/go1.18.10.linux-amd64.tar.gz
 sudo tar -C /usr/local -xvf go1.18.10.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+```
+Add the Go path to the system's environment variables by editing the system-wide .bashrc file:
+```
+sudo nano ~/.bashrc
+```
+Add the following lines at the end of the file.
+```
+export PATH=$PATH:/usr/local/go/bin:/home/ubuntu/go/bin
+```
+Save the file by pressing `Ctrl+x`, then `Y`, and Enter,
+Next, Reload the environment variables by running the following command:
+```
+source /etc/environment
+```
+Verify the Go path by running the following command:
+```
+echo $PATH
 ```
 
 #### Install the binaries
@@ -23,7 +39,6 @@ Next, let's install the latest version of Bluzelle. Make sure you `git checkout`
 ```
 git clone -b <latest-release-tag> https://github.com/bluzelle/bluzelle-public.git
 cd bluzelle-public/curium && make install
-
 ```
 
 Verify that everything installed successfully by running:
@@ -31,13 +46,18 @@ Verify that everything installed successfully by running:
 curiumd version --long
 ```
 
-### Download binary from github releases.
+### 2) Download binary from github releases.
 
 ```
-wget https://github.com/bluzelle/bluzelle-public/releases/download/v10.2/curiumd
+wget https://github.com/bluzelle/bluzelle-public/releases/download/<latest-release-tag>/curiumd
+sudo mv curiumd ~/go/bin
+```
+Verify that everything installed successfully by running:
+```
+curiumd version --long
 ```
 
-## General Configuration
+## 2. General Configuration
 Make sure to walk through the basic setup and configuration. Operators will need to initialize `curiumd`, download the genesis file for `bluzelle-9`.
 ### initialize chain
 Choose a custom moniker for the node and initialize. By default, the `init` command creates the ~/.curium directory with subfolders `config` and `data`. In the `/config` directory, the most important files for configuration are `app.toml` and `config.toml`. 
