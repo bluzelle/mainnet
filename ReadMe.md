@@ -47,6 +47,7 @@ curiumd version --long
 ```
 
 ### 2) Download binary from github releases.
+Visit the `https://github.com/bluzelle/bluzelle-public/releases` page and choose the version you want.
 
 ```
 wget https://github.com/bluzelle/bluzelle-public/releases/download/<latest-release-tag>/curiumd
