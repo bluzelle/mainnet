@@ -149,6 +149,15 @@ pruning-interval = "10"
 
  To enable state sync, visit an explorer to get a recent block height and corresponding hash. A node operator can choose any height/hash in the current bonding period, but as the recommended snapshot period is `1000` blocks, it is advised to choose something close to `current height - 1000`. Current height can be found on the [Bluzelle Ping.pub Explorer](https://ping.explorer.net.bluzelle.com/Bluzelle/block)
 
+ Another way to get the `trust_height` and 'trust_hash' is to use the following commands.
+ ```
+ SNAP_RPC="https://a.client.sentry.net.bluzelle.com:26657"
+ 
+ LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); 
+ BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); 
+ TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+ ```
+
  With the block height and hash selected, update the configuration in `~/.curium/config/config.toml` to set `enable = true`, and populate the `trust_height` and `trust_hash`. Node operators can configure the rpc servers to a preferred provider, but there must be at least two entries. It is important that these are two rpc servers the node operator trusts to verify component parts of the chain state. While not recommended, uniqueness is not currently enforced, so it is possible to duplicate the same server in the list and still sync successfully.
 
  ```
