@@ -1,7 +1,7 @@
 # How to join Bluzelle Mainnet
 
 ## 1. Install the Curiumd binary.
-### 1) Build from the source code.
+### A. Build from the source code.
 #### Build Tools
 Install make and gcc
 ```
@@ -46,7 +46,7 @@ Verify that everything installed successfully by running:
 curiumd version --long
 ```
 
-### 2) Download binary from github releases.
+### B. Download binary from github releases.
 Visit the `https://github.com/bluzelle/bluzelle-public/releases` page and choose the version you want.
 
 ```
@@ -133,16 +133,18 @@ pruning-interval = "10"
  Among these three ways, the fastest one is QuickSync. QuickSync uses the compressed data snapshot and you can simply download that file and extract into the data folder. The next one is StateSync. The default one is BlockSync and it started from the Genesis file. This BlockSync could be used for setting up a archival node. 
 
  ### Blocksync
- Blocksync is faster than traditional consensus and syncs the chain from genesis by downloading blocks and verifying against the merkle tree of validators. For more information see [CometBFT's Fastsync Docs](https://docs.cometbft.com/v0.34/core/fast-sync)
+  In a proof of work blockchain, syncing with the chain is the same process as staying up-to-date with the consensus: download blocks, and look for the one with the most total work. In proof-of-stake, the consensus process is more complex, as it involves rounds of communication between the nodes to determine what block should be committed next. Using this process to sync up with the blockchain from scratch can take a very long time.
+  When syncing via Blocksync, node operators will either need to manually upgrade the chain or set up [Cosmovisor](https://hub.cosmos.network/main/hub-tutorials/join-mainnet.html#cosmovisor) to upgrade automatically.
+#### Enable Fast Sync
+  It’s much faster to just download blocks and check the merkle tree of validators than to run the real-time consensus gossip protocol. This is called Fastsync. For more information see [CometBFT's Fastsync Docs](https://docs.cometbft.com/v0.34/core/fast-sync).
 
- When syncing via Blocksync, node operators will either need to manually upgrade the chain or set up [Cosmovisor](https://hub.cosmos.network/main/hub-tutorials/join-mainnet.html#cosmovisor) to upgrade automatically.
+  To support faster syncing, CometBFT offers a `fast-sync` mode, which is enabled by default, and can be toggled in the `config.toml` or via `--fast_sync=false`.
+  This sync should start from the genesis file. So please install the corresponding binary version and start the node. Current corresponding version tag is `v10.2`.
 
- #### Getting Started Blocksync.
- This sync should start from the genesis file. So please install the corresponding binary version and start the node. Current corresponding version tag is `v9.0`.
- ```
- curiumd start
- ```
- The node will begin rebuilding state until it hits the first upgrade height at block 3,333,333. If Cosmovisor is set up then there's nothing else to do besides wait, otherwise the node operator will need to perform the manual upgrade.
+  ```
+  curiumd start
+  ```
+  The node will begin rebuilding state until it hits the first upgrade height at block 3,333,333. If Cosmovisor is set up then there's nothing else to do besides wait, otherwise the node operator will need to perform the manual upgrade.
 
  ### StateSync
  State Sync is an efficient and fast way to bootstrap a new node. It replays larger chunks of application state directly rather than replaying individual blocks or consensus rounds. For more information, see [CometBFT's State Sync Docs](https://docs.cometbft.com/v0.34/core/state-sync)
