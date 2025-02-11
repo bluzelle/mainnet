@@ -93,11 +93,11 @@ persistent_peers = "<node id 1>@<node address 1>:26656,<node id 2>@<node address
 ```
 
 ### Address Book
-Node operators can optionally download the addressbook from [addrbook.json](https://github.com/bluzelle/mainnet/blob/main/addrbook.json)
+Node operators can optionally download the addressbook from [addrbook.json](http://snapshots.net.bluzelle.com:8001/addrbook.json)
 
 ```
-wget https://raw.githubusercontent.com/bluzelle/mainnet/main/addrbook.json
-mv addrbook.json ~/curium/config
+wget http://snapshots.net.bluzelle.com:8001/addrbook.json
+mv addrbook.json ~/.curium/config
 ```
 
 ### Pruning of State
